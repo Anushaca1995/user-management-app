@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './styles.css';
+import './styles.scss';
 
 const UserList = ({ users, fetchUsers }) => {
   const navigate = useNavigate();
@@ -29,23 +29,22 @@ const UserList = ({ users, fetchUsers }) => {
 
     const adminMatch =
       adminFilter === 'All' ||
-      (adminFilter === 'yes' && user.AdminUser) ||
-      (adminFilter === 'no' && !user.AdminUser);
+      (adminFilter === 'Yes' && user.AdminUser) ||
+      (adminFilter === 'No' && !user.AdminUser);
 
     const functionalMatch =
       functionalFilter === 'All' ||
-      (functionalFilter === 'yes' && user.FunctionalUser) ||
-      (functionalFilter === 'no' && !user.FunctionalUser);
+      (functionalFilter === 'Yes' && user.FunctionalUser) ||
+      (functionalFilter === 'No' && !user.FunctionalUser);
 
     const blockAccessMatch =
       blockAccessFilter === 'All' ||
-      (blockAccessFilter === 'yes' && user.BlockAccess) ||
-      (blockAccessFilter === 'no' && !user.BlockAccess);
+      (blockAccessFilter === 'Yes' && user.BlockAccess) ||
+      (blockAccessFilter === 'No' && !user.BlockAccess);
 
     return searchMatch && adminMatch && functionalMatch && blockAccessMatch;
   });
 
-  // Sorting users
   const sortedUsers = [...filteredUsers].sort((a, b) => {
     if (!sortConfig.key) return 0;
     const aValue = a[sortConfig.key] ? a[sortConfig.key].toString().toLowerCase() : '';
@@ -97,8 +96,8 @@ const UserList = ({ users, fetchUsers }) => {
     <label className="filter-label">Admin User:</label>
     <select value={adminFilter} onChange={(e) => setAdminFilter(e.target.value)} className="filter-dropdown">
       <option value="all">-- select --</option>
-      <option value="yes">Yes</option>
-      <option value="no">No</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
     </select>
   </div>
 
@@ -106,8 +105,8 @@ const UserList = ({ users, fetchUsers }) => {
     <label className="filter-label">Functional User:</label>
     <select value={functionalFilter} onChange={(e) => setFunctionalFilter(e.target.value)} className="filter-dropdown">
       <option value="all">-- select --</option>
-      <option value="yes">Yes</option>
-      <option value="no">No</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
     </select>
   </div>
 
@@ -115,8 +114,8 @@ const UserList = ({ users, fetchUsers }) => {
     <label className="filter-label">Block Access:</label>
     <select value={blockAccessFilter} onChange={(e) => setBlockAccessFilter(e.target.value)} className="filter-dropdown">
       <option value="all">-- select --</option>
-      <option value="yes">Yes</option>
-      <option value="no">No</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
     </select>
   </div>
 </div>
@@ -153,9 +152,9 @@ const UserList = ({ users, fetchUsers }) => {
               <td>{user.DisplayName}</td>
               <td>{user.Email}</td>
               <td>{user.Status}</td>
-              <td>{user.AdminUser ? 'yes' : 'no'}</td>
-              <td>{user.FunctionalUser ? 'yes' : 'no'}</td>
-              <td>{user.BlockAccess ? 'yes' : 'no'}</td>
+              <td>{user.AdminUser ? 'Yes' : 'No'}</td>
+              <td>{user.FunctionalUser ? 'Yes' : 'No'}</td>
+              <td>{user.BlockAccess ? 'Yes' : 'No'}</td>
               <td>{user.MFA_Mobile}</td>
               <td>
                 <button className="edit-btn" onClick={() => navigate(`/edit-user/${user.UserID}`)}>Edit</button>

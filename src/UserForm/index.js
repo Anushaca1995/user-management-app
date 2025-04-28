@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import './styles.css';
+import './styles.scss';
 
 const UserForm = ({ headerTitle, users, onSubmit }) => {
   const { UserID } = useParams();
