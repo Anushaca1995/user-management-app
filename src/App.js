@@ -1,12 +1,10 @@
-// App.js
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import UserList from './UserList';
 import UserForm from './UserForm';
 
 const App = () => {
   const [users, setUsers] = useState([]);
-  const navigate = useNavigate();
 
   const fetchUsers = async () => {
     try {
