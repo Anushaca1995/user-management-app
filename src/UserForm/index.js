@@ -1,21 +1,39 @@
-import React, { useState } from 'react';
+// UserForm.js
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import './styles.css';
 
-const UserForm = ({ headerTitle, onSubmit }) => {
+const UserForm = ({ headerTitle, users, onSubmit }) => {
+  const { UserID } = useParams();
+  const navigate = useNavigate();
+  const isEditing = Boolean(UserID);
+
   const [formData, setFormData] = useState({
     DisplayName: '',
     Email: '',
-    Status: 'null',
-    AdminUser: 'null',
-    FunctionalUser: 'null',
-    BlockAccess: 'null',
-    HierarchyMaintenance: 'null',
+    Status: '',
+    AdminUser: '',
+    FunctionalUser: '',
+    BlockAccess: '',
+    MFA_Mobile: '',
   });
 
-  const [errors, setErrors] = useState({
-    DisplayName: '',
-    Email: '',
-  });
+  useEffect(() => {
+    if (isEditing && users.length > 0) {
+      const userToEdit = users.find((u) => u.UserID === parseInt(UserID));
+      if (userToEdit) {
+        setFormData({
+          DisplayName: userToEdit.DisplayName || '',
+          Email: userToEdit.Email || '',
+          Status: userToEdit.Status || '',
+          AdminUser: userToEdit.AdminUser ? '1' : '0',
+          FunctionalUser: userToEdit.FunctionalUser ? '1' : '0',
+          BlockAccess: userToEdit.BlockAccess ? '1' : '0',
+          MFA_Mobile: userToEdit.MFA_Mobile || '',
+        });
+      }
+    }
+  }, [UserID, users]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,40 +43,22 @@ const UserForm = ({ headerTitle, onSubmit }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Reset errors before checking
-    setErrors({
-      DisplayName: '',
-      Email: '',
-    });
+    const updatedFormData = {
+      ...formData,
+      AdminUser: formData.AdminUser === '1' ? 1 : 0,
+      FunctionalUser: formData.FunctionalUser === '1' ? 1 : 0,
+      BlockAccess: formData.BlockAccess === '1' ? 1 : 0,
+    };
 
-    let formIsValid = true;
-    const newErrors = {};
+    await onSubmit(updatedFormData, isEditing, UserID);
+    navigate('/');
+  };
 
-    // Validate DisplayName
-    if (!formData.DisplayName.trim()) {
-      formIsValid = false;
-      newErrors.DisplayName = 'Display Name is required';
-    }
-
-    // Validate Email
-    if (!formData.Email.trim()) {
-      formIsValid = false;
-      newErrors.Email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.Email)) {
-      formIsValid = false;
-      newErrors.Email = 'Email format is invalid';
-    }
-
-    // Set error messages if any
-    setErrors(newErrors);
-
-    // If form is valid, submit the data
-    if (formIsValid) {
-      onSubmit(formData);
-    }
+  const handleCancel = () => {
+    navigate('/');
   };
 
   return (
@@ -66,113 +66,62 @@ const UserForm = ({ headerTitle, onSubmit }) => {
       <h2>{headerTitle}</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="DisplayName">Display Name</label>
+          <label>Display Name</label>
           <input
             type="text"
-            id="DisplayName"
             name="DisplayName"
             value={formData.DisplayName}
             onChange={handleChange}
             required
           />
-          {errors.DisplayName && <div className="error">{errors.DisplayName}</div>}
         </div>
 
         <div className="form-group">
-          <label htmlFor="Email">Email</label>
+          <label>Email</label>
           <input
             type="email"
-            id="Email"
             name="Email"
             value={formData.Email}
             onChange={handleChange}
             required
           />
-          {errors.Email && <div className="error">{errors.Email}</div>}
         </div>
 
         <div className="form-group">
-          <label htmlFor="Status">Status</label>
-          <select
-            id="Status"
-            name="Status"
-            value={formData.Status}
+          <label>MFA Mobile</label>
+          <input
+            type="text"
+            name="MFA_Mobile"
+            value={formData.MFA_Mobile}
             onChange={handleChange}
-          >
-            <option value="null" disabled>
-            -- select --
-            </option>
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-          </select>
+          />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="AdminUser">Admin User</label>
-          <select
-            id="AdminUser"
-            name="AdminUser"
-            value={formData.AdminUser}
-            onChange={handleChange}
-          >
-            <option value="null" disabled>
-            -- select --
-            </option>
-            <option value="0">No</option>
-            <option value="1">Yes</option>
-          </select>
-        </div>
+        {['Status', 'AdminUser', 'FunctionalUser', 'BlockAccess'].map((field) => (
+          <div className="form-group" key={field}>
+            <label>{field.replace(/([A-Z])/g, ' $1')}</label>
+            <select name={field} value={formData[field]} onChange={handleChange}>
+              {field === 'Status' ? (
+                <>
+                  <option value="">--Select Status--</option>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                  <option value="Testing">Testing</option>
+                </>
+              ) : (
+                <>
+                  <option value="">--Select--</option>
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
+                </>
+              )}
+            </select>
+          </div>
+        ))}
 
-        <div className="form-group">
-          <label htmlFor="FunctionalUser">Functional User</label>
-          <select
-            id="FunctionalUser"
-            name="FunctionalUser"
-            value={formData.FunctionalUser}
-            onChange={handleChange}
-          >
-            <option value="null" disabled>
-              -- select --
-            </option>
-            <option value="0">No</option>
-            <option value="1">Yes</option>
-          </select>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="BlockAccess">Block Access</label>
-          <select
-            id="BlockAccess"
-            name="BlockAccess"
-            value={formData.BlockAccess}
-            onChange={handleChange}
-          >
-            <option value="null" disabled>
-            -- select --
-            </option>
-            <option value="0">No</option>
-            <option value="1">Yes</option>
-          </select>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="HierarchyMaintenance">Hierarchy Maintenance</label>
-          <select
-            id="HierarchyMaintenance"
-            name="HierarchyMaintenance"
-            value={formData.HierarchyMaintenance}
-            onChange={handleChange}
-          >
-            <option value="null" disabled>
-            -- select --
-            </option>
-            <option value="0">No</option>
-            <option value="1">Yes</option>
-          </select>
-        </div>
-
-        <div className="form-group">
-          <button type="submit">Submit</button>
+        <div className="form-buttons">
+          <button type="submit" className="submit-btn">{isEditing ? 'Update' : 'Submit'}</button>
+          <button type="button" className="cancel-btn" onClick={handleCancel}>Cancel</button>
         </div>
       </form>
     </div>

@@ -24,14 +24,14 @@ app.get('/users', async (req, res) => {
 // -----------------------------
 // Add New User
 app.post('/users', async (req, res) => {
-  const { DisplayName, Email, Status, AdminUser, FunctionalUser, BlockAccess, HierarchyMaintenance } = req.body;
+  const { DisplayName, Email, Status, AdminUser, FunctionalUser, BlockAccess, MFA_Mobile } = req.body;
   try {
     console.log(`
-      INSERT INTO dbo.users (DisplayName, Email, Status, AdminUser, FunctionalUser, BlockAccess, HierarchyMaintenance) 
-      VALUES (${DisplayName}, ${Email}, ${Status}, ${AdminUser}, ${FunctionalUser}, ${BlockAccess}, ${HierarchyMaintenance})`);
+      INSERT INTO dbo.users (DisplayName, Email, Status, AdminUser, FunctionalUser, BlockAccess, MFA_Mobile) 
+      VALUES (${DisplayName}, ${Email}, ${Status}, ${AdminUser}, ${FunctionalUser}, ${BlockAccess}, ${MFA_Mobile})`);
     await sql.query`
-      INSERT INTO dbo.users (DisplayName, Email, Status, AdminUser, FunctionalUser, BlockAccess, HierarchyMaintenance) 
-      VALUES (${DisplayName}, ${Email}, ${Status}, ${AdminUser}, ${FunctionalUser}, ${BlockAccess}, ${HierarchyMaintenance})
+      INSERT INTO dbo.users (DisplayName, Email, Status, AdminUser, FunctionalUser, BlockAccess, MFA_Mobile) 
+      VALUES (${DisplayName}, ${Email}, ${Status}, ${AdminUser}, ${FunctionalUser}, ${BlockAccess}, ${MFA_Mobile})
     `;
     res.status(201).send('User added');
   } catch (err) {
@@ -44,7 +44,18 @@ app.post('/users', async (req, res) => {
 // Update User
 app.put('/users/:UserID', async (req, res) => {
   const { UserID } = req.params;
-  const { DisplayName, Email, Status, AdminUser, FunctionalUser, BlockAccess, HierarchyMaintenance } = req.body;
+  const { DisplayName, Email, Status, AdminUser, FunctionalUser, BlockAccess, MFA_Mobile } = req.body;
+  console.log(`
+      UPDATE dbo.users 
+      SET DisplayName = ${DisplayName},
+          Email = ${Email},
+          Status = ${Status},
+          AdminUser = ${AdminUser},
+          FunctionalUser = ${FunctionalUser},
+          BlockAccess = ${BlockAccess},
+          MFA_Mobile = ${MFA_Mobile}
+      WHERE UserID = ${UserID}
+    `);
   try {
     await sql.query`
       UPDATE dbo.users 
@@ -54,7 +65,7 @@ app.put('/users/:UserID', async (req, res) => {
           AdminUser = ${AdminUser},
           FunctionalUser = ${FunctionalUser},
           BlockAccess = ${BlockAccess},
-          HierarchyMaintenance = ${HierarchyMaintenance}
+          MFA_Mobile = ${MFA_Mobile}
       WHERE UserID = ${UserID}
     `;
     res.send('User updated');

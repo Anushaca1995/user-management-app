@@ -47,20 +47,41 @@
   }
   
   .edit-btn {
-    background-color: #2196F3;
+    background-color: #0e2538;
     color: white;
   }
   
   .edit-btn:hover {
-    background-color: #0b7dda;
+    background-color: #7e8891;
   }
   
   .delete-btn {
-    background-color: #f44336;
+    background-color: #560b05;
     color: white;
   }
   
   .delete-btn:hover {
-    background-color: #da190b;
+    background-color: #805855;
   }
   
+  /* Add User Section */
+.add-user-section {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Add User Link (styled like signup link) */
+.add-user-link {
+  color: #007bff;
+  text-decoration: underline;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.add-user-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}

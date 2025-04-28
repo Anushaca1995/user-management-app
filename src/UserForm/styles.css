@@ -92,3 +92,38 @@ form {
     font-size: 14px; /* Adjust font size for the options */
   }
   
+  .form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .submit-btn,
+  .cancel-btn {
+    padding: 10px 20px;
+    margin-inline:60px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .submit-btn {
+    background-color: #15344e;
+    color: white;
+  }
+  
+  .cancel-btn {
+    background-color: #74a9ab;
+    color: white;
+  }
+  
+  .submit-btn:hover {
+    background-color: #718389;
+  }
+  
+  .cancel-btn:hover {
+    background-color: #b3c0c1;
+  }
+  

@@ -1,31 +1,15 @@
-import React, { useEffect, useState } from 'react';
+// UserList.js
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './styles.css';
 
-const UserList = () => {
-  const [users, setUsers] = useState([]);
+const UserList = ({ users, fetchUsers }) => {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const fetchUsers = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/users');
-      const data = await response.json();
-      setUsers(data);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-    }
-  };
 
   const handleDelete = async (UserID) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await fetch(`http://localhost:3000/users/${UserID}`, {
-          method: 'DELETE',
-        });
+        await fetch(`http://localhost:3000/users/${UserID}`, { method: 'DELETE' });
         fetchUsers(); // Refresh list after delete
       } catch (error) {
         console.error('Error deleting user:', error);
@@ -33,14 +17,15 @@ const UserList = () => {
     }
   };
 
-  const mapYesNo = (value) => (value === 1 ? 'Yes' : 'No');
-
   return (
     <div className="user-list-container">
       <h1>User Management</h1>
-      <button className="add-btn" onClick={() => navigate('/add-user')}>
-        Add New User
-      </button>
+      <div className="add-user-section">
+        <p>Do you want to add a new user? Please click
+          <a href="/add-user" className="add-user-link"> here</a>
+        </p>
+      </div>
+
       <table className="user-table">
         <thead>
           <tr>
@@ -48,10 +33,10 @@ const UserList = () => {
             <th>DisplayName</th>
             <th>Email</th>
             <th>Status</th>
-            <th>AdminUser</th>
-            <th>FunctionalUser</th>
-            <th>BlockAccess</th>
-            <th>HierarchyMaintenance</th>
+            <th>Admin User</th>
+            <th>Functional User</th>
+            <th>Block Access</th>
+            <th>MFA Mobile</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -62,10 +47,10 @@ const UserList = () => {
               <td>{user.DisplayName}</td>
               <td>{user.Email}</td>
               <td>{user.Status}</td>
-              <td>{mapYesNo(user.AdminUser)}</td>
-              <td>{mapYesNo(user.FunctionalUser)}</td>
-              <td>{mapYesNo(user.BlockAccess)}</td>
-              <td>{mapYesNo(user.HierarchyMaintenance)}</td>
+              <td>{user.AdminUser ? 'Yes' : 'No'}</td>
+              <td>{user.FunctionalUser ? 'Yes' : 'No'}</td>
+              <td>{user.BlockAccess ? 'Yes' : 'No'}</td>
+              <td>{user.MFA_Mobile}</td>
               <td>
                 <button className="edit-btn" onClick={() => navigate(`/edit-user/${user.UserID}`)}>Edit</button>
                 <button className="delete-btn" onClick={() => handleDelete(user.UserID)}>Delete</button>
