@@ -82,6 +82,7 @@ const UserList = ({ users, fetchUsers }) => {
     setFunctionalFilter('All');
     setBlockAccessFilter('All');
     setStatusFilter('All');
+    setSortConfig({ key: null, direction: 'ascending' });
   };
 
   const columns = [
@@ -178,9 +179,9 @@ const UserList = ({ users, fetchUsers }) => {
       <Table
         columns={columns}
         data={sortedUsers}
-        renderRow={(user) => (
+        renderRow={(user, index) => (
           <>
-            <td>{user.UserID}</td>
+            <td>{index+1}</td>
             <td>{user.DisplayName}</td>
             <td>{user.Email}</td>
             <td>{user.Status}</td>
