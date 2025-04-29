@@ -51,9 +51,13 @@ const UserForm = ({ headerTitle, users, onSubmit }) => {
       FunctionalUser: formData.FunctionalUser === '1' ? 1 : 0,
       BlockAccess: formData.BlockAccess === '1' ? 1 : 0,
     };
-
-    await onSubmit(updatedFormData, isEditing, UserID);
-    navigate('/');
+    try {
+      await onSubmit(updatedFormData, isEditing, UserID);
+      navigate('/');
+    } catch (error) {
+      alert('Failed to submit. Please try again.');
+    }
+    
   };
 
   const handleCancel = () => {

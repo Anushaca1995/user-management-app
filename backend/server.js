@@ -6,11 +6,10 @@ const cors = require('cors');
 app.use(cors()); 
 app.use(express.json());
 
-// Connect to the database
+
 connectToDb();
 
-// -----------------------------
-// Fetch All Users
+
 app.get('/users', async (req, res) => {
   try {
     const result = await sql.query`SELECT * FROM dbo.users`;
@@ -21,8 +20,7 @@ app.get('/users', async (req, res) => {
   }
 });
 
-// -----------------------------
-// Add New User
+
 app.post('/users', async (req, res) => {
   const { DisplayName, Email, Status, AdminUser, FunctionalUser, BlockAccess, MFA_Mobile } = req.body;
   try {
@@ -40,8 +38,7 @@ app.post('/users', async (req, res) => {
   }
 });
 
-// -----------------------------
-// Update User
+
 app.put('/users/:UserID', async (req, res) => {
   const { UserID } = req.params;
   const { DisplayName, Email, Status, AdminUser, FunctionalUser, BlockAccess, MFA_Mobile } = req.body;
@@ -75,8 +72,7 @@ app.put('/users/:UserID', async (req, res) => {
   }
 });
 
-// -----------------------------
-// Delete User
+
 app.delete('/users/:UserID', async (req, res) => {
   const { UserID } = req.params;
   try {
@@ -88,8 +84,7 @@ app.delete('/users/:UserID', async (req, res) => {
   }
 });
 
-// -----------------------------
-// Start server
+
 const port = 3000;
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
