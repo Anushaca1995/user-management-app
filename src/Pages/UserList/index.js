@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import Table from '../../Components/Table';
 import Filter from '../../Components/Filter';
 import './styles.scss';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UserList = ({ users, fetchUsers }) => {
   const navigate = useNavigate();
@@ -17,8 +19,10 @@ const UserList = ({ users, fetchUsers }) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
         await fetch(`http://localhost:3000/users/${UserID}`, { method: 'DELETE' });
+        toast.success("User deleted successfully!");
         fetchUsers();
       } catch (error) {
+        toast.error('Error deleting user!');
         console.error('Error deleting user:', error);
       }
     }
@@ -193,6 +197,7 @@ const UserList = ({ users, fetchUsers }) => {
         )}
         actions={actions}
       />
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };
