@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Table from '../../Components/Table';
+import Filter from '../../Components/Filter';
 import './styles.scss';
 
 const UserList = ({ users, fetchUsers }) => {
@@ -20,7 +22,6 @@ const UserList = ({ users, fetchUsers }) => {
       }
     }
   };
-
 
   const filteredUsers = users.filter((user) => {
     const searchMatch =
@@ -68,58 +69,85 @@ const UserList = ({ users, fetchUsers }) => {
   };
 
   const handleRefresh = () => {
-  setSearchQuery('');
-  setAdminFilter('All');
-  setFunctionalFilter('All');
-  setBlockAccessFilter('All');
-};
+    setSearchQuery('');
+    setAdminFilter('All');
+    setFunctionalFilter('All');
+    setBlockAccessFilter('All');
+  };
 
+  const columns = [
+    { label: '#', sortable: false },
+    { label: 'Display Name', sortable: true, onSort: () => handleSort('DisplayName'), isSorted: sortConfig.key === 'DisplayName', isAscending: sortConfig.direction === 'ascending' },
+    { label: 'Email', sortable: true, onSort: () => handleSort('Email'), isSorted: sortConfig.key === 'Email', isAscending: sortConfig.direction === 'ascending' },
+    { label: 'Status', sortable: false },
+    { label: 'Admin User', sortable: false },
+    { label: 'Functional User', sortable: false },
+    { label: 'Block Access', sortable: false },
+    { label: 'MFA Mobile', sortable: false },
+  ];
 
+  const actions = [
+    {
+      label: 'Edit',
+      onClick: (user) => navigate(`/edit-user/${user.UserID}`) ,
+      className: 'edit-btn'
+    },
+    {
+      label: 'Delete',
+      onClick: (user) => handleDelete(user.UserID),
+      className: 'delete-btn'
+    }
+  ];
+  
   return (
     <div className="user-list-container">
       <h1>User Management</h1>
+
       <div className="filters-section">
-  <div className="search-refresh-group">
-    <input
-      type="text"
-      placeholder="Search Name or Email..."
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-      className="search-bar"
-    />
-    <button onClick={handleRefresh} className="refresh-button" title="Refresh">
-    ↻
-    </button>
-  </div>
+        <div className="search-refresh-group">
+          <input
+            type="text"
+            placeholder="Search Name or Email..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-bar"
+          />
+          <button onClick={handleRefresh} className="refresh-button" title="Refresh">
+            ↻
+          </button>
+        </div>
 
-  <div className="filter-group">
-    <label className="filter-label">Admin User:</label>
-    <select value={adminFilter} onChange={(e) => setAdminFilter(e.target.value)} className="filter-dropdown">
-      <option value="all">-- select --</option>
-      <option value="Yes">Yes</option>
-      <option value="No">No</option>
-    </select>
-  </div>
-
-  <div className="filter-group">
-    <label className="filter-label">Functional User:</label>
-    <select value={functionalFilter} onChange={(e) => setFunctionalFilter(e.target.value)} className="filter-dropdown">
-      <option value="all">-- select --</option>
-      <option value="Yes">Yes</option>
-      <option value="No">No</option>
-    </select>
-  </div>
-
-  <div className="filter-group">
-    <label className="filter-label">Block Access:</label>
-    <select value={blockAccessFilter} onChange={(e) => setBlockAccessFilter(e.target.value)} className="filter-dropdown">
-      <option value="all">-- select --</option>
-      <option value="Yes">Yes</option>
-      <option value="No">No</option>
-    </select>
-  </div>
-</div>
-
+        <Filter
+          label="Admin User"
+          value={adminFilter}
+          options={[
+            { value: 'All', label: '-- select --' },
+            { value: 'Yes', label: 'Yes' },
+            { value: 'No', label: 'No' },
+          ]}
+          onChange={setAdminFilter}
+        />
+        <Filter
+          label="Functional User"
+          value={functionalFilter}
+          options={[
+            { value: 'All', label: '-- select --' },
+            { value: 'Yes', label: 'Yes' },
+            { value: 'No', label: 'No' },
+          ]}
+          onChange={setFunctionalFilter}
+        />
+        <Filter
+          label="Block Access"
+          value={blockAccessFilter}
+          options={[
+            { value: 'All', label: '-- select --' },
+            { value: 'Yes', label: 'Yes' },
+            { value: 'No', label: 'No' },
+          ]}
+          onChange={setBlockAccessFilter}
+        />
+      </div>
 
       <div className="add-user-section">
         <p>Do you want to add a new user? Please click
@@ -127,43 +155,23 @@ const UserList = ({ users, fetchUsers }) => {
         </p>
       </div>
 
-      <table className="user-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th onClick={() => handleSort('DisplayName')} className="sortable-header">
-              Display Name {sortConfig.key === 'DisplayName' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : ''}
-            </th>
-            <th onClick={() => handleSort('Email')} className="sortable-header">
-              Email {sortConfig.key === 'Email' ? (sortConfig.direction === 'ascending' ? '▲' : '▼') : ''}
-            </th>
-            <th>Status</th>
-            <th>Admin User</th>
-            <th>Functional User</th>
-            <th>Block Access</th>
-            <th>MFA Mobile</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortedUsers.map((user, index) => (
-            <tr key={user.UserID}>
-              <td>{index + 1}</td>
-              <td>{user.DisplayName}</td>
-              <td>{user.Email}</td>
-              <td>{user.Status}</td>
-              <td>{user.AdminUser ? 'Yes' : 'No'}</td>
-              <td>{user.FunctionalUser ? 'Yes' : 'No'}</td>
-              <td>{user.BlockAccess ? 'Yes' : 'No'}</td>
-              <td>{user.MFA_Mobile}</td>
-              <td>
-                <button className="edit-btn" onClick={() => navigate(`/edit-user/${user.UserID}`)}>Edit</button>
-                <button className="delete-btn" onClick={() => handleDelete(user.UserID)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Table
+        columns={columns}
+        data={sortedUsers}
+        renderRow={(user) => (
+          <>
+            <td>{user.UserID}</td>
+            <td>{user.DisplayName}</td>
+            <td>{user.Email}</td>
+            <td>{user.Status}</td>
+            <td>{user.AdminUser ? 'Yes' : 'No'}</td>
+            <td>{user.FunctionalUser ? 'Yes' : 'No'}</td>
+            <td>{user.BlockAccess ? 'Yes' : 'No'}</td>
+            <td>{user.MFA_Mobile}</td>
+          </>
+        )}
+        actions={actions}
+      />
     </div>
   );
 };

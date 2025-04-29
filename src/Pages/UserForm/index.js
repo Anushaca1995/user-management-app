@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import CheckboxField from '../../Components/CheckBoxField'; // Import the new component
 import './styles.scss';
 
 const UserForm = ({ headerTitle, users, onSubmit }) => {
@@ -11,9 +12,9 @@ const UserForm = ({ headerTitle, users, onSubmit }) => {
     DisplayName: '',
     Email: '',
     Status: '',
-    AdminUser: '',
-    FunctionalUser: '',
-    BlockAccess: '',
+    AdminUser: false,
+    FunctionalUser: false,
+    BlockAccess: false,
     MFA_Mobile: '',
   });
 
@@ -25,20 +26,20 @@ const UserForm = ({ headerTitle, users, onSubmit }) => {
           DisplayName: userToEdit.DisplayName || '',
           Email: userToEdit.Email || '',
           Status: userToEdit.Status || '',
-          AdminUser: userToEdit.AdminUser ? '1' : '0',
-          FunctionalUser: userToEdit.FunctionalUser ? '1' : '0',
-          BlockAccess: userToEdit.BlockAccess ? '1' : '0',
+          AdminUser: Boolean(userToEdit.AdminUser),
+          FunctionalUser: Boolean(userToEdit.FunctionalUser),
+          BlockAccess: Boolean(userToEdit.BlockAccess),
           MFA_Mobile: userToEdit.MFA_Mobile || '',
         });
       }
     }
-  }, [UserID, users]);
+  }, [UserID, users, isEditing]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
@@ -47,17 +48,22 @@ const UserForm = ({ headerTitle, users, onSubmit }) => {
 
     const updatedFormData = {
       ...formData,
-      AdminUser: formData.AdminUser === '1' ? 1 : 0,
-      FunctionalUser: formData.FunctionalUser === '1' ? 1 : 0,
-      BlockAccess: formData.BlockAccess === '1' ? 1 : 0,
+      AdminUser: formData.AdminUser ? 1 : 0,
+      FunctionalUser: formData.FunctionalUser ? 1 : 0,
+      BlockAccess: formData.BlockAccess ? 1 : 0,
     };
+
     try {
       await onSubmit(updatedFormData, isEditing, UserID);
+      if (isEditing) {
+        alert('User updated successfully!');
+      } else {
+        alert('User added successfully!');
+      }
       navigate('/');
     } catch (error) {
       alert('Failed to submit. Please try again.');
     }
-    
   };
 
   const handleCancel = () => {
@@ -69,9 +75,10 @@ const UserForm = ({ headerTitle, users, onSubmit }) => {
       <h2>{headerTitle}</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Display Name</label>
+          <label htmlFor="DisplayName">Display Name</label>
           <input
             type="text"
+            id="DisplayName"
             name="DisplayName"
             value={formData.DisplayName}
             onChange={handleChange}
@@ -80,9 +87,10 @@ const UserForm = ({ headerTitle, users, onSubmit }) => {
         </div>
 
         <div className="form-group">
-          <label>Email</label>
+          <label htmlFor="Email">Email</label>
           <input
             type="email"
+            id="Email"
             name="Email"
             value={formData.Email}
             onChange={handleChange}
@@ -91,40 +99,60 @@ const UserForm = ({ headerTitle, users, onSubmit }) => {
         </div>
 
         <div className="form-group">
-          <label>MFA Mobile</label>
+          <label htmlFor="MFA_Mobile">MFA Mobile</label>
           <input
             type="text"
+            id="MFA_Mobile"
             name="MFA_Mobile"
             value={formData.MFA_Mobile}
             onChange={handleChange}
           />
         </div>
 
-        {['Status', 'AdminUser', 'FunctionalUser', 'BlockAccess'].map((field) => (
-          <div className="form-group" key={field}>
-            <label>{field.replace(/([A-Z])/g, ' $1')}</label>
-            <select name={field} value={formData[field]} onChange={handleChange}>
-              {field === 'Status' ? (
-                <>
-                  <option value="">--Select Status--</option>
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                  <option value="Testing">Testing</option>
-                </>
-              ) : (
-                <>
-                  <option value="">--Select--</option>
-                  <option value="1">Yes</option>
-                  <option value="0">No</option>
-                </>
-              )}
-            </select>
-          </div>
-        ))}
+        <div className="form-group">
+          <label htmlFor="Status">Status</label>
+          <select
+            id="Status"
+            name="Status"
+            value={formData.Status}
+            onChange={handleChange}
+            required
+          >
+            <option value="">--Select Status--</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+            <option value="Testing">Testing</option>
+          </select>
+        </div>
+
+        <CheckboxField
+          label="Admin User"
+          name="AdminUser"
+          checked={formData.AdminUser}
+          onChange={handleChange}
+        />
+
+        <CheckboxField
+          label="Functional User"
+          name="FunctionalUser"
+          checked={formData.FunctionalUser}
+          onChange={handleChange}
+        />
+
+        <CheckboxField
+          label="Block Access"
+          name="BlockAccess"
+          checked={formData.BlockAccess}
+          onChange={handleChange}
+        />
 
         <div className="form-buttons">
-          <button type="submit" className="submit-btn">{isEditing ? 'Update' : 'Submit'}</button>
-          <button type="button" className="cancel-btn" onClick={handleCancel}>Cancel</button>
+          <button type="submit" className="submit-btn">
+            {isEditing ? 'Update' : 'Submit'}
+          </button>
+          <button type="button" className="cancel-btn" onClick={handleCancel}>
+            Cancel
+          </button>
         </div>
       </form>
     </div>

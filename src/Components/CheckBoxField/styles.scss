@@ -1,0 +1,13 @@
+.form-group {
+    margin-bottom: 15px;
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+      
+      .checkbox-group label {
+        margin-left: 10px;
+        font-weight: normal;
+      }
+  }
