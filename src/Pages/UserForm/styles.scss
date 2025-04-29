@@ -35,7 +35,10 @@ select {
   box-sizing: border-box;
 }
 
-
+#Status{
+  color: rgb(79, 72, 72);
+  font-size: 14px;
+}
 .form-buttons {
   display: flex;
   justify-content: space-between;
