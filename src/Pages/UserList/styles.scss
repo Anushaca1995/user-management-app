@@ -31,18 +31,17 @@
   .filters-section {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 5px;
     align-items: center;
     margin-bottom: 20px;
 
     .search-refresh-group {
       display: flex;
-      gap: 6px;
       align-items: center;
       flex: 2;
 
       .search-bar {
-        margin-inline: 30px;
+        margin-inline: 10px;
         width: 300px;
         padding: 8px;
         font-size: 14px;

@@ -7,6 +7,7 @@ import './styles.scss';
 const UserList = ({ users, fetchUsers }) => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All');
   const [adminFilter, setAdminFilter] = useState('All');
   const [functionalFilter, setFunctionalFilter] = useState('All');
   const [blockAccessFilter, setBlockAccessFilter] = useState('All');
@@ -27,24 +28,31 @@ const UserList = ({ users, fetchUsers }) => {
     const searchMatch =
       user.DisplayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.Email.toLowerCase().includes(searchQuery.toLowerCase());
-
+  
     const adminMatch =
       adminFilter === 'All' ||
       (adminFilter === 'Yes' && user.AdminUser) ||
       (adminFilter === 'No' && !user.AdminUser);
-
+  
     const functionalMatch =
       functionalFilter === 'All' ||
       (functionalFilter === 'Yes' && user.FunctionalUser) ||
       (functionalFilter === 'No' && !user.FunctionalUser);
-
+  
     const blockAccessMatch =
       blockAccessFilter === 'All' ||
       (blockAccessFilter === 'Yes' && user.BlockAccess) ||
       (blockAccessFilter === 'No' && !user.BlockAccess);
-
-    return searchMatch && adminMatch && functionalMatch && blockAccessMatch;
+  
+    const statusMatch =
+      statusFilter === 'All' ||
+      (statusFilter === 'Active' && user.Status === 'Active') ||
+      (statusFilter === 'Testing' && user.Status === 'Testing') ||
+      (statusFilter === 'Inactive' && user.Status === 'Inactive');
+  
+    return searchMatch && adminMatch && functionalMatch && blockAccessMatch && statusMatch;
   });
+  
 
   const sortedUsers = [...filteredUsers].sort((a, b) => {
     if (!sortConfig.key) return 0;
@@ -73,6 +81,7 @@ const UserList = ({ users, fetchUsers }) => {
     setAdminFilter('All');
     setFunctionalFilter('All');
     setBlockAccessFilter('All');
+    setStatusFilter('All');
   };
 
   const columns = [
@@ -116,6 +125,17 @@ const UserList = ({ users, fetchUsers }) => {
             ↻
           </button>
         </div>
+        <Filter
+          label="Status"
+          value={statusFilter}
+          options={[
+            { value: 'All', label: '-- select --' },
+            { value: 'Active', label: 'Active' },
+            { value: 'Inactive', label: 'Inactive' },
+            { value: 'Testing', label: 'Testing' },
+          ]}
+          onChange={setStatusFilter}
+        />
 
         <Filter
           label="Admin User"
