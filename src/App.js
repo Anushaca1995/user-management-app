@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import UserList from './UserList';
-import UserForm from './UserForm';
+import UserList from './Pages/UserList';
+import UserForm from './Pages/UserForm';
 
 const App = () => {
   const [users, setUsers] = useState([]);
