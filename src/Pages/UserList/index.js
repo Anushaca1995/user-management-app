@@ -176,7 +176,7 @@ const UserList = ({ users, fetchUsers }) => {
 
       <div className="add-user-section">
         <p>Do you want to add a new user? Please click
-          <a href="/add-user" className="add-user-link"> here</a>
+          <a href="/add-user" className="add-user-link">here</a>
         </p>
       </div>
 
