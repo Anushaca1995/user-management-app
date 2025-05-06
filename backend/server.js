@@ -1,5 +1,5 @@
 const express = require('express');
-const { connectToDb, sql } = require('./db');  // assuming db.js connects to Azure
+const { connectToDb, sql } = require('./db'); 
 const app = express();
 const cors = require('cors');
 

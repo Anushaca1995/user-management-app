@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './styles.scss';
+import './styles.scss';
 
 const Table = ({ columns, data, renderRow, actions }) => (
   <table className={'user-table'}>

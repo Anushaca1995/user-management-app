@@ -1,4 +1,4 @@
-import styles from './styles.scss';
+import './styles.scss';
 
 const CheckBoxField = ({ label, name, checked, onChange }) => {
   return (

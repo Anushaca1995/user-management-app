@@ -1,4 +1,4 @@
-import styles from './styles.scss';
+import './styles.scss';
 
 const Filter = ({ label, value, options, onChange }) => (
     <div className="filter-group">

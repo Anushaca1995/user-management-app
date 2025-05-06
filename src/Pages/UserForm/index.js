@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import CheckboxField from '../../Components/CheckBoxField'; // Import the new component
+import CheckboxField from '../../Components/CheckBoxField'; 
 import './styles.scss';
 
 const UserForm = ({ headerTitle, users, onSubmit }) => {
@@ -20,6 +20,7 @@ const UserForm = ({ headerTitle, users, onSubmit }) => {
 
   useEffect(() => {
     if (isEditing && users.length > 0) {
+      console.log(users.length);
       const userToEdit = users.find((u) => u.UserID === parseInt(UserID));
       if (userToEdit) {
         setFormData({
@@ -105,7 +106,14 @@ const UserForm = ({ headerTitle, users, onSubmit }) => {
             id="MFA_Mobile"
             name="MFA_Mobile"
             value={formData.MFA_Mobile}
-            onChange={handleChange}
+            onChange={(e) => {
+              handleChange(e);
+              e.target.setCustomValidity('');
+            }}
+            pattern="[0-9+\-]*"
+            onInvalid={(e) => {
+              e.target.setCustomValidity("Only digits, '+' and '-' are allowed.");
+            }}
           />
         </div>
 
