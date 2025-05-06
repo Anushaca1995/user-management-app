@@ -9,7 +9,8 @@ const UserForm = ({ headerTitle, users, onSubmit }) => {
   const isEditing = Boolean(UserID);
 
   const [formData, setFormData] = useState({
-    DisplayName: '',
+    FirstName: '',
+    LastName: '',
     Email: '',
     Status: '',
     AdminUser: false,
@@ -22,8 +23,11 @@ const UserForm = ({ headerTitle, users, onSubmit }) => {
     if (isEditing && users.length > 0) {
       console.log(users.length);
       const userToEdit = users.find((u) => u.UserID === parseInt(UserID));
+      const [FirstName, LastName] = userToEdit.DisplayName.split(' ');
       if (userToEdit) {
         setFormData({
+          FirstName: FirstName || '',
+          LastName: LastName || '',
           DisplayName: userToEdit.DisplayName || '',
           Email: userToEdit.Email || '',
           Status: userToEdit.Status || '',
@@ -59,6 +63,7 @@ const UserForm = ({ headerTitle, users, onSubmit }) => {
 
     const updatedFormData = {
       ...formData,
+      DisplayName: `${formData.FirstName} ${formData.LastName}`,
       AdminUser: formData.AdminUser ? 1 : 0,
       FunctionalUser: formData.FunctionalUser ? 1 : 0,
       BlockAccess: formData.BlockAccess ? 1 : 0,
@@ -85,17 +90,30 @@ const UserForm = ({ headerTitle, users, onSubmit }) => {
     <div className="form-container">
       <h2>{headerTitle}</h2>
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="DisplayName">Display Name</label>
-          <input
-            type="text"
-            id="DisplayName"
-            name="DisplayName"
-            value={formData.DisplayName}
-            onChange={handleChange}
-            required
-          />
-        </div>
+      <div className="form-group">
+        <label htmlFor="FirstName">First Name</label>
+        <input
+          type="text"
+          id="FirstName"
+          name="FirstName"
+          value={formData.FirstName}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="LastName">Last Name</label>
+        <input
+          type="text"
+          id="LastName"
+          name="LastName"
+          value={formData.LastName}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
 
         <div className="form-group">
           <label htmlFor="Email">Email</label>
