@@ -47,6 +47,16 @@ const UserForm = ({ headerTitle, users, onSubmit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+  const isDuplicate = users.some(user =>
+    user.Email.toLowerCase() === formData.Email.toLowerCase() &&
+    (!isEditing || user.UserID !== parseInt(UserID))
+  );
+
+  if (isDuplicate) {
+    alert('Oops! This email is already registered. Please use a different email.');
+    return;
+  }
+
     const updatedFormData = {
       ...formData,
       AdminUser: formData.AdminUser ? 1 : 0,
